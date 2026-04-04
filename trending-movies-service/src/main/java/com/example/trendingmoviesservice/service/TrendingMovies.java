@@ -19,6 +19,9 @@ public class TrendingMovies extends TrendingMoviesServiceGrpc.TrendingMoviesServ
     @Value("${api.key}")
     private String apiKey;
 
+    @Value("${topk.movies}")
+    private int topKMovies;
+
     private RestTemplate restTemplate;
 
     public TrendingMovies(RestTemplate restTemplate) {
@@ -34,7 +37,7 @@ public class TrendingMovies extends TrendingMoviesServiceGrpc.TrendingMoviesServ
         GetTrendingMoviesResponse.Builder responsBuilder = GetTrendingMoviesResponse.newBuilder();
         tmdbResponse.getResults()
                 .stream()
-                .limit(10)
+                .limit(topKMovies)
                 .forEach(m -> responsBuilder.addMovies(
                         Movie.newBuilder()
                                 .setMovieId(m.getId())
