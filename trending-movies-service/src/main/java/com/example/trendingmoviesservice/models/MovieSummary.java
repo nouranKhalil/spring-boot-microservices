@@ -4,6 +4,15 @@ public class MovieSummary {
     private String id;
     private String title;
     private String overview;
+    private String vote_average;
+
+    public String getVote_average() {
+        return vote_average;
+    }
+
+    public void setVote_average(String vote_average) {
+        this.vote_average = vote_average;
+    }
 
     public String getId() {
         return id;

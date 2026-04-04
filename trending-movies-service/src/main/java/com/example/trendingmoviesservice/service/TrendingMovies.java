@@ -40,6 +40,7 @@ public class TrendingMovies extends TrendingMoviesServiceGrpc.TrendingMoviesServ
                                 .setMovieId(m.getId())
                                 .setName(m.getTitle())
                                 .setDescription(m.getOverview())
+                                .setRating(m.getVote_average())
                                 .build()));
 
         responseObserver.onNext(responsBuilder.build());

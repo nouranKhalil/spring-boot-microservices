@@ -70,7 +70,7 @@ public class MovieCatalogResource {
                         .newBuilder()
                         .build());
         return response.getMoviesList().stream()
-                       .map(m -> new Movie(m.getMovieId(), m.getName(), m.getDescription()))
+                       .map(m -> new Movie(m.getMovieId(), m.getName(), m.getDescription(), m.getRating()))
                        .toList();
 
     }
