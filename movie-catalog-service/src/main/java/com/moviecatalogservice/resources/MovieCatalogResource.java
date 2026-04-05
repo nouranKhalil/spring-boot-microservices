@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.stream.Collectors;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +72,7 @@ public class MovieCatalogResource {
                         .build());
         return response.getMoviesList().stream()
                        .map(m -> new Movie(m.getMovieId(), m.getName(), m.getDescription(), m.getRating()))
-                       .toList();
+                       .collect(Collectors.toList());
 
     }
 }
