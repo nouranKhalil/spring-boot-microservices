@@ -1,28 +1,54 @@
 package com.example.ratingsservice.models;
 
+import java.io.Serializable;
+
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "ratings",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "movie_id"}))
+@Table(name = "ratings")
+@IdClass(Rating.RatingId.class)
 public class Rating {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
-    private Long id;
-
     @Column(name = "user_id", nullable = false)
     @JsonIgnore
     private String userId;
 
+    @Id
     @Column(name = "movie_id", nullable = false)
     private String movieId;
 
     @Column(name = "rating", nullable = false)
     private int rating;
+
+    // Composite key class
+    public static class RatingId implements Serializable {
+        private String userId;
+        private String movieId;
+
+        public RatingId() {}
+
+        public RatingId(String userId, String movieId) {
+            this.userId = userId;
+            this.movieId = movieId;
+        }
+
+        // equals and hashCode are REQUIRED for composite keys
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof RatingId)) return false;
+            RatingId that = (RatingId) o;
+            return userId.equals(that.userId) && movieId.equals(that.movieId);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * userId.hashCode() + movieId.hashCode();
+        }
+    }
 
     public Rating() {
     }
@@ -31,10 +57,6 @@ public class Rating {
         this.userId = userId;
         this.movieId = movieId;
         this.rating = rating;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getUserId() {
