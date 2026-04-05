@@ -17,4 +17,8 @@ public interface MovieCacheRepository extends MongoRepository<MovieCacheEntity, 
     Optional<MovieCacheEntity> findValidCacheByMovieId(String movieId, LocalDateTime now);
 
     void deleteByMovieId(String movieId);
+
+    // delete oldest entries based on lastAccessed time
+    @Query(value = "{}", sort = "{ 'lastAccessed': 1 }", delete = true)
+    void deleteOldestEntries(int limit);
 }

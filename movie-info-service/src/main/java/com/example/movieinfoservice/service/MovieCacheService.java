@@ -23,6 +23,9 @@ public class MovieCacheService {
     
     @Value("${movie.cache.enabled:true}")
     private boolean cacheEnabled;
+    
+    @Value("${movie.cache.max-size:10000}")
+    private long maxCacheSize;
 
     /*
     get movie from cache first
@@ -64,6 +67,15 @@ public class MovieCacheService {
             return;
         }
         try{
+            // check cache size before inserting
+            long currentSize = cacheRepository.count();
+            
+            if (currentSize >= maxCacheSize) {
+                // if cache is full then delete oldest entries by lastAccessed
+                deleteOldestEntries((int)(currentSize - maxCacheSize + 1));
+                logger.warn("cache is full ({} entries), removed oldest entries", currentSize);
+            }
+            
             MovieCacheEntity entity = new MovieCacheEntity(movie);
             cacheRepository.save(entity);
             logger.info("movie {} cached successfully", movie.getMovieId());
@@ -78,5 +90,18 @@ public class MovieCacheService {
         }catch(Exception e){
             logger.error("failed to remove from cache: {}",e.getMessage());
         }
+    }
+    
+    private void deleteOldestEntries(int countToDelete){
+        try{
+            cacheRepository.deleteOldestEntries(countToDelete);
+            logger.info("deleted {} oldest cache entries", countToDelete);
+        }catch(Exception e){
+            logger.error("failed to delete oldest entries: {}", e.getMessage());
+        }
+    }
+
+    public long getCacheSize(){
+        return cacheRepository.count();
     }
 }
